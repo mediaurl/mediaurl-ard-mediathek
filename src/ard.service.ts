@@ -24,7 +24,7 @@ export const getDashboards = (): Promise<DashboardItem[]> => {
   ).then((data) => {
     return data.widgets.map((widget) => {
       return {
-        id: widget.id,
+        id: widget.links.self.href.split("?")[0],
         name: widget.title,
       };
     });

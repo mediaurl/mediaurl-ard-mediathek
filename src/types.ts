@@ -46,7 +46,7 @@ type Teaser = {
 type CompilationWidget = {
   compilationType: "editorial";
   id: string;
-  link: {
+  links: {
     self: Link;
   };
   teasers: Teaser[];

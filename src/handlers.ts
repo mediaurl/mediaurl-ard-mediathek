@@ -17,23 +17,24 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
   await ctx.requestCache(input);
 
   return makeRequest<CompilationResponse>(
-    `https://api.ardmediathek.de/page-gateway/widgets/ard/editorials/${input.id}`,
+    (input.id as string).replace("/pages/", "/widgets/"),
     {
       pageNumber: input.cursor || 0,
     }
   ).then((data) => {
     const {
-      pagination: { pageNumber, pageSize, totalElements },
+      pagination: { pageNumber },
     } = data;
-    console.log({ pageNumber, pageSize, totalElements });
     return {
       items: data.teasers.map<MainItem>((teaser) => {
+        const href = teaser.links.target.href.split("?")[0];
+
         return {
           type:
             DIRECTORY_TYPES.indexOf(teaser.type) !== -1 ? "directory" : "movie",
-          id: teaser.links.target.id,
+          id: href,
           ids: {
-            id: teaser.links.target.id,
+            id: href,
           },
           name: teaser.shortTitle,
           images: {
@@ -53,9 +54,7 @@ export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
 
   /** Geo restrictions based on IP */
   return ctx
-    .fetch(
-      `https://api.ardmediathek.de/page-gateway/pages/ard/item/${input.ids.id}`
-    )
+    .fetch(input.ids.id as string)
     .then<ItemResponse>((data) => data.json())
     .then((data) => {
       const widget = data.widgets[0];
