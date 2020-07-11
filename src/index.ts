@@ -8,7 +8,7 @@ const main = async () => {
     name: "ARD Mediathek",
     icon: "https://www.ardmediathek.de/images/CiPOTLni.png",
     version: "0.0.0",
-    itemTypes: ["movie", "series"],
+    itemTypes: ["movie", "series", "directory"],
     rootDirectories: [],
     dashboards: await getDashboards(),
     defaultDirectoryOptions: {

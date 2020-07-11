@@ -5,7 +5,9 @@ import {
   Source,
 } from "@watchedcom/sdk";
 import { makeRequest } from "./ard.service";
-import { CompilationResponse, ItemResponse } from "./types";
+import { CompilationResponse, ItemResponse, TeaserTypes } from "./types";
+
+const DIRECTORY_TYPES: TeaserTypes[] = ["compilation"];
 
 export const directoryHandler: WorkerHandlers["directory"] = async (
   input,
@@ -27,8 +29,9 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
     return {
       items: data.teasers.map<MainItem>((teaser) => {
         return {
-          type: "movie",
-          // type: teaser.type === 'compilation' ? 'directory' : 'movie',
+          type:
+            DIRECTORY_TYPES.indexOf(teaser.type) !== -1 ? "directory" : "movie",
+          id: teaser.links.target.id,
           ids: {
             id: teaser.links.target.id,
           },
@@ -68,7 +71,7 @@ export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
           .map<Source>((_) => {
             return {
               type: "url",
-              name: `${_._height}p`,
+              name: `ARD Mediathek (${_._height}p)`,
               url: (_._stream as string).replace(/^\/\//, "http://"),
             };
           }),

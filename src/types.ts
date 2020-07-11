@@ -1,3 +1,10 @@
+export type TeaserTypes =
+  | "ondemand"
+  | "compilation"
+  | "live"
+  | "show"
+  | "poster";
+
 type Link = {
   id: string;
   title: string;
@@ -33,7 +40,7 @@ type Teaser = {
     target: Link;
   };
   subtitled: boolean;
-  type: "ondemand" | "compilation";
+  type: TeaserTypes;
 };
 
 type CompilationWidget = {
