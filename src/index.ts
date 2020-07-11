@@ -11,6 +11,9 @@ const main = async () => {
     itemTypes: ["movie", "series", "directory"],
     rootDirectories: [],
     dashboards: await getDashboards(),
+    defaultDirectoryFeatures: {
+      search: { enabled: true },
+    },
     defaultDirectoryOptions: {
       imageShape: "landscape",
       displayName: true,
