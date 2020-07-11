@@ -1,1 +1,1 @@
-# [WIP] watched-addon-ard-mediathek
+# watched-addon-ard-mediathek
