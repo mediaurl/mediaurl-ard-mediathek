@@ -73,6 +73,13 @@ export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
     .then<ItemResponse>((data) => data.json())
     .then((data) => {
       const widget = data.widgets[0];
+
+      const sources =
+        widget.mediaCollection.embedded._mediaArray[0]._mediaStreamArray;
+      const filteredSources = sources.filter(
+        (_) => typeof _._quality === "number" && _._height
+      );
+
       return {
         type: "movie",
         ids: {
@@ -80,15 +87,16 @@ export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
         },
         name: widget.title,
         description: widget.synopsis,
-        sources: widget.mediaCollection.embedded._mediaArray[0]._mediaStreamArray
-          .filter((_) => typeof _._quality === "number" && _._height)
-          .map<Source>((_) => {
-            return {
-              type: "url",
-              name: `ARD Mediathek (${_._height}p)`,
-              url: (_._stream as string).replace(/^\/\//, "http://"),
-            };
-          }),
+        sources: filteredSources.length
+          ? filteredSources
+          : sources.map<Source>((_) => {
+              const qualityStr = _._height ? ` ${_._height}p` : "";
+              return {
+                type: "url",
+                name: `ARD Mediathek${qualityStr}`,
+                url: (_._stream as string).replace(/^\/\//, "http://"),
+              };
+            }),
       };
     });
 };
